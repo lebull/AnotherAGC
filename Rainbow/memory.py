@@ -1,54 +1,84 @@
-from screen import Screen
+from screen import Screen, ScreenColors
 
+from bitarray import bitarray
 
+import math, random
 
 class MemorySpace(object):
     def __init__(self, totalBits, wordSize):
-        self.data = [0 for i in range(totalBits)]
+        self.data = bitarray(totalBits*wordSize)#[0 for i in range(totalBits)]
         self.totalBits = totalBits
         self.wordSize = wordSize
 
     def __len__(self):
         return len(self.data)/self.wordSize
 
-    def read(self, address):
-        return self.data[address]
+    def getBitIndexesFromAddress(self, address, count=None):
+        if(not count):
+            count = self.wordSize
+        startBitNumber = address * self.wordSize
+        endBitNumber = startBitNumber + count
+        return (startBitNumber, endBitNumber)
 
-    def write(self, address, data):
-        self.data[address] = bin(data)
+    def readWord(self, address):
+        bitNum = self.getBitIndexesFromAddress(address)
+        return int(self.data[bitNum[0] : bitNum[1]].to01(), 2)
+
+    def writeWord(self, address, data):
+        bitNum = self.getBitIndexesFromAddress(address)
+
+        newData = bitarray(self.wordSize)
+        dataString = bin(int(data))[2:]
+        newData[-len(dataString):] = bitarray(dataString)
+        #newData.frombytes(data)
+        print newData
+        self.data[bitNum[0]: bitNum[1]] = newData
 
     def getMaxAddress(self):
         return self.totalBits/sel.wordSize
 
-#
-# class VisualMemory(MemorySpace):
-#     def __init__(self, wordsPerRow, *args, **kwargs):
-#         super(self, VisualMemory).__init__(*args, **kwargs)
-#         rowWidth = self.wordSize * wordsPerRow
-#         numRows = float(self.totalBits)/rowWidth
-#         self.screen = Screen((rowWidth, numRows))
-#
-#     def draw(self):
+
+class VisualMemory(MemorySpace):
+    def __init__(self, wordsPerRow, *args, **kwargs):
+        super(VisualMemory, self).__init__(*args, **kwargs)
+        rowWidth = self.wordSize * wordsPerRow
+        numRows = float(self.totalBits)/rowWidth
+        numRows = int(math.ceil(numRows))
+        self.screen = Screen((rowWidth, numRows))
+
+    def bitToScreenPos(self):
+        pass
+
+    def draw(self):
+        for t in range(100):
+            pos = (random.randint(0, self.screen.size[0]-1), random.randint(0, self.screen.size[1]-1))
+            self.screen.data[pos[1]][pos[0]] = ScreenColors.random()
+        self.screen.printout()
 
 if __name__ == "__main__":
     import unittest
 
     class TestMemorySpace(unittest.TestCase):
         def testCreate(self):
-            space = MemorySpace(0xFFFF, 0x10)
-            self.assertEqual(len(space), 0xFFF)
+            wordSize = 16
+            space = MemorySpace(0xFFFF, wordSize)
+            self.assertEqual(len(space)/wordSize, 0xFFF)
 
-        def testReadWrite(self):
-            space = MemorySpace(0xFFFF, 0x10)
+
+        def testReadWriteWord(self):
+            space = MemorySpace(0xFFFF, 16)
             data = 0x1A2B
-            address = 0xFF
-            space.write(address, data)
-            readData = space.read(address)
+            address = 0xF000
+            space.writeWord(address, data)
+            readData = space.readWord(address)
             self.assertEqual(data, readData)
 
         #TODO:
         # Test writing a value that is too large
         # Test writing to an address that is out of range
-        
 
-    unittest.main()
+
+    #
+    v = VisualMemory(4, 4096, 16).draw()
+
+    #unittest.main()

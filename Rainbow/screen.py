@@ -1,3 +1,6 @@
+import random
+import sys
+
 class ScreenShapes(object):
     SINGLE = " "
     DOUBLE = "  "

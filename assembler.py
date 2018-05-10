@@ -2,6 +2,8 @@
 
 import re
 
+
+
 if __name__ == "__main__":
     filePath = "Apollo-11/Comanche055/GIMBAL_LOCK_AVOIDANCE.agc"
 
@@ -21,4 +23,6 @@ if __name__ == "__main__":
             words = line.split("\t")
             print "{}: {}".format(lineNumber, words)
             lineNumber+=1
+
+            
     #Split stuff
