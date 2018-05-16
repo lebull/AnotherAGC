@@ -4,11 +4,14 @@ from bitarray import bitarray
 
 import math, random
 
+
+
 class MemorySpace(object):
     def __init__(self, totalBits, wordSize):
         self.data = bitarray(totalBits*wordSize)#[0 for i in range(totalBits)]
         self.totalBits = totalBits
         self.wordSize = wordSize
+        self.allocations = {}
 
     def __len__(self):
         return len(self.data)/self.wordSize
@@ -37,6 +40,14 @@ class MemorySpace(object):
     def getMaxAddress(self):
         return self.totalBits/sel.wordSize
 
+    def allocate(self, label, words):
+       self.allocations[label]
+
+    def readAllocated(self, label, words):
+       pass
+
+    #writeAllocated(self, label, data)
+    #   pass
 
 class VisualMemory(MemorySpace):
     def __init__(self, wordsPerRow, *args, **kwargs):
@@ -73,9 +84,21 @@ if __name__ == "__main__":
             readData = space.readWord(address)
             self.assertEqual(data, readData)
 
+        def testReadWriteAllocation(self):
+            space = MemorySpace(0xFFFF, 16)
+            space.allocate("alloc", 0xC8)
+            self.assertEqual(space.readAllocated, readData)
+
+
         #TODO:
         # Test writing a value that is too large
         # Test writing to an address that is out of range
+
+        #If you try to allocate a space with an existing name, raise an error
+        #If you try to allocate space beyond the size of the memorySpace, raise an overflow error
+
+        #def highlightAllocated(self, label):
+        #   pass
 
 
     #

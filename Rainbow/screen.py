@@ -6,10 +6,20 @@ class ScreenShapes(object):
     DOUBLE = "  "
 
 class ScreenColors(object):
+    PX_DEFAULT = 0
+    PX_BLACK = 1
+    PX_RED = 8
+    PX_GREEN = 9
+    PX_MAG = 10
+    PX_CYAN = 11
+    PX_LIGHTRED = 12
+    PX_LIGHTYELLOW = 13
+    PX_LIGHTGREEN = 14
+    PX_LIGHTBLUE = 15
 
     BG_DEFAULT="49"
-
     BG_BLACK= "40"
+    #BG_WHITE=?
     BG_RED= "41"
     BG_GREEN="42"
     BG_YELLOW="43"
@@ -27,14 +37,18 @@ class ScreenColors(object):
     @classmethod
     def random(cls):
         return random.choice([
-            cls.BG_MAG,         #000
-            cls.BG_GREEN,       #001
-            cls.BG_CYAN,        #010
-            cls.BG_LIGHTRED,    #011
-            cls.BG_LIGHTYELLOW, #100
-            cls.BG_LIGHTGREEN,  #101
-            cls.BG_LIGHTBLUE]   #110
+            cls.BG_MAG,         #1000
+            cls.BG_GREEN,       #1001
+            cls.BG_CYAN,        #1010
+            cls.BG_LIGHTRED,    #1011
+            cls.BG_LIGHTYELLOW, #1100
+            cls.BG_LIGHTGREEN,  #1101
+            cls.BG_LIGHTBLUE]   #1110
         )
+
+    @classmethod
+    def pxToScreencolor(cls, pxBits):
+        return cls.BG_MAG
 
 class Screen(object):
 
